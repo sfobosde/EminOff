@@ -16,6 +16,7 @@ from fastapi import (
 from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
 
 from .auth import (
     security,
@@ -144,3 +145,26 @@ def raw_image(
         raise HTTPException(404)
 
     return FileResponse(path)
+
+
+@app.post("/delete/{filename}")
+def delete_image(
+    filename: str,
+    credentials=Depends(security),
+):
+    verify_basic(credentials)
+
+    path = UPLOAD_DIR / filename
+
+    if not path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="File not found",
+        )
+
+    path.unlink()
+
+    return RedirectResponse(
+        url="/",
+        status_code=303,
+    )

@@ -44,7 +44,29 @@ a{
     word-break:break-all;
     font-size:14px;
 }
+.delete {
 
+margin-top:10px;
+
+background:#d9534f;
+
+color:white;
+
+border:none;
+
+padding:6px 12px;
+
+border-radius:5px;
+
+cursor:pointer;
+
+}
+
+.delete:hover {
+
+opacity:0.8;
+
+}
 </style>
 
 </head>
@@ -68,6 +90,19 @@ a{
 {{ file.name }}
 
 </div>
+
+
+<form
+method="post"
+action="/delete/{{ file.name }}"
+onsubmit="return confirm('Удалить изображение?');"
+>
+
+<button class="delete">
+Удалить
+</button>
+
+</form>
 
 </a>
 
