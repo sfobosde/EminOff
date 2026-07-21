@@ -36,7 +36,13 @@ EVENTS_FILE = Path("/data/events.json")
 if not EVENTS_FILE.exists():
     EVENTS_FILE.write_text("[]", encoding="utf-8")
 
-CONFIG_DIR = Path("config")
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
+CONFIG_DIR = BASE_DIR / "config"
+
+EVENT_TYPES_FILE = CONFIG_DIR / "event-types.json"
 
 EVENT_TYPES_FILE = CONFIG_DIR / "event-types.json"
 
