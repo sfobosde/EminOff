@@ -1,0 +1,26 @@
+{
+    "info": {
+        "title": "Информация",
+        "color": "#4CAF50",
+        "background": "#E8F5E9",
+        "icon": "🟢"
+    },
+    "alert": {
+        "title": "Тревога",
+        "color": "#E53935",
+        "background": "#FFEBEE",
+        "icon": "🔴"
+    },
+    "warning": {
+        "title": "Предупреждение",
+        "color": "#FF9800",
+        "background": "#FFF3E0",
+        "icon": "🟠"
+    },
+    "success": {
+        "title": "Успех",
+        "color": "#2196F3",
+        "background": "#E3F2FD",
+        "icon": "🔵"
+    }
+}

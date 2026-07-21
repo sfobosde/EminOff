@@ -1,129 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<title>Images</title>
+    <title>Images</title>
 
-<style>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+            background: #f5f5f5;
+        }
 
-body{
-    font-family:Arial;
-    margin:40px;
-    background:#f5f5f5;
-}
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
 
-.grid{
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-}
+        .card {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            width: 220px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+        }
 
-.card{
-    background:white;
-    padding:10px;
-    border-radius:8px;
-    width:220px;
-    box-shadow:0 2px 5px rgba(0,0,0,.1);
-}
+        img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
 
-img{
-    width:200px;
-    height:200px;
-    object-fit:cover;
-}
+        a {
+            text-decoration: none;
+            color: #333;
+        }
 
-a{
-    text-decoration:none;
-    color:#333;
-}
+        .name {
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 14px;
+        }
 
-.name{
-    margin-top:10px;
-    word-break:break-all;
-    font-size:14px;
-}
-.delete {
+        .delete {
 
-margin-top:10px;
+            margin-top: 10px;
 
-background:#d9534f;
+            background: #d9534f;
 
-color:white;
+            color: white;
 
-border:none;
+            border: none;
 
-padding:6px 12px;
+            padding: 6px 12px;
 
-border-radius:5px;
+            border-radius: 5px;
 
-cursor:pointer;
+            cursor: pointer;
 
-}
+        }
 
-.delete:hover {
+        .delete:hover {
 
-opacity:0.8;
+            opacity: 0.8;
 
-}
-</style>
+        }
+
+        #events {
+
+            width: 320px;
+
+            padding: 20px;
+
+            overflow: auto;
+
+            background: #fafafa;
+
+            border-left: 1px solid #ddd;
+
+        }
+        .event {
+
+            padding: 12px;
+
+            margin-bottom: 12px;
+
+            border-radius: 8px;
+
+        }
+    </style>
 
 </head>
 
 <body>
 
-<h2>Uploaded Images</h2>
+    <h2>Uploaded Images</h2>
 
-<div class="grid">
+    <div class="grid">
 
-{% for file in files %}
+        {% for file in files %}
 
-<div class="card">
+        <div class="card">
 
-<a href="/image/{{ file.name }}">
+            <a href="/image/{{ file.name }}">
 
-<img src="/raw/{{ file.name }}">
+                <img src="/raw/{{ file.name }}">
 
-<div class="name">
+                <div class="name">
 
-{{ file.name }}
+                    {{ file.name }}
 
-</div>
+                </div>
 
 
-<form
-method="post"
-action="/delete/{{ file.name }}"
-onsubmit="return confirm('Удалить изображение?');"
->
+                <form method="post" action="/delete/{{ file.name }}" onsubmit="return confirm('Удалить изображение?');">
 
-<button class="delete">
-Удалить
-</button>
+                    <button class="delete">
+                        Удалить
+                    </button>
 
-</form>
+                </form>
 
-</a>
+            </a>
 
-</div>
+        </div>
 
-{% endfor %}
+        {% endfor %}
 
-</div>
+    </div>
+
+    <div id="events">
+
+        <h2>Events</h2>
+
+        <div id="event-list">
+
+        </div>
+
+    </div>
 
 </body>
 <script>
 
-const socket = new WebSocket(
-    "ws://" + window.location.host + "/ws"
-);
+    const socket = new WebSocket(
+        "ws://" + window.location.host + "/ws"
+    );
 
-socket.onmessage = function(event){
+    socket.onmessage = function (event) {
 
-    location.reload();
+        const msg = JSON.parse(event.data);
 
-};
+        if (msg.kind === "image") {
 
+            location.reload();
+
+        }
+
+        if (msg.kind === "event") {
+
+            addEvent(msg.event);
+
+        }
+
+    };
+
+    function addEvent(event) {
+
+        const div = document.createElement("div");
+
+        div.className = "event";
+
+        div.style.borderLeft =
+            "6px solid " + event.color;
+
+        div.style.background =
+            event.background;
+
+        div.innerHTML =
+
+            "<div><b>" +
+
+            event.icon +
+
+            " " +
+
+            event.title +
+
+            "</b></div>" +
+
+            "<div>" +
+
+            event.message +
+
+            "</div>" +
+
+            "<small>" +
+
+            event.time +
+
+            "</small>";
+
+        document
+            .getElementById("event-list")
+            .prepend(div);
+
+    }
 </script>
+
 </html>

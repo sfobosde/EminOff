@@ -1,0 +1,27 @@
+[
+    {
+        "hotkey": "ctrl+shift+1",
+        "type": "info",
+        "message": "Говорите громче"
+    },
+    {
+        "hotkey": "ctrl+shift+2",
+        "type": "alert",
+        "message": "Говорите тише"
+    },
+    {
+        "hotkey": "ctrl+shift+3",
+        "type": "info",
+        "message": "Следующий вопрос"
+    },
+    {
+        "hotkey": "ctrl+shift+4",
+        "type": "alert",
+        "message": "Повторите"
+    },
+    {
+        "hotkey": "ctrl+shift+5",
+        "type": "info",
+        "message": "Предыдущий вопрос"
+    }
+]

@@ -18,6 +18,8 @@ from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+import json
+from datetime import datetime
 
 from .auth import (
     security,
@@ -28,6 +30,18 @@ from .config import settings
 
 UPLOAD_DIR = Path(settings.UPLOAD_DIR)
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+EVENTS_FILE = Path("/data/events.json")
+
+if not EVENTS_FILE.exists():
+    EVENTS_FILE.write_text("[]", encoding="utf-8")
+
+CONFIG_DIR = Path("config")
+
+EVENT_TYPES_FILE = CONFIG_DIR / "event-types.json"
+
+with open(EVENT_TYPES_FILE, encoding="utf-8") as f:
+    EVENT_TYPES = json.load(f)
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -112,7 +126,12 @@ async def upload(
     with open(path, "wb") as f:
         f.write(contents)
 
-    await manager.broadcast(filename)
+    await manager.broadcast(
+        json.dumps({
+            "kind": "image",
+            "filename": filename
+        })
+    )
 
     return {
         "success": True,
@@ -211,3 +230,68 @@ async def websocket_endpoint(websocket: WebSocket):
 
     except Exception:
         manager.disconnect(websocket)
+        
+
+def load_events():
+
+    with open(EVENTS_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_events(events):
+
+    with open(EVENTS_FILE, "w", encoding="utf-8") as f:
+        json.dump(
+            events,
+            f,
+            ensure_ascii=False,
+            indent=4
+        )
+
+from pydantic import BaseModel
+
+class EventRequest(BaseModel):
+
+    type: str
+
+    message: str
+
+@app.post("/event")
+async def add_event(
+    event: EventRequest,
+    credentials=Depends(security)
+):
+
+    verify_basic(credentials)
+
+    events = load_events()
+
+    cfg = EVENT_TYPES.get(
+        event.type,
+        EVENT_TYPES["info"]
+    )
+
+    item = {
+        "time": datetime.now().strftime("%H:%M:%S"),
+        "type": event.type,
+        "message": event.message,
+        "title": cfg["title"],
+        "color": cfg["color"],
+        "background": cfg["background"],
+        "icon": cfg["icon"]
+    }
+
+    events.append(item)
+
+    save_events(events)
+
+    await manager.broadcast(
+        json.dumps({
+            "kind": "event",
+            "event": item
+        })
+    )
+
+    return {
+        "success": True
+    }

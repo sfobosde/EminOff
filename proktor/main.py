@@ -1,3 +1,4 @@
+import json
 import os
 import time
 from io import BytesIO
@@ -14,6 +15,7 @@ SERVER_URL = os.getenv("SERVER_URL")
 UPLOAD_TOKEN = os.getenv("UPLOAD_TOKEN")
 HOTKEY = os.getenv("HOTKEY", "ctrl+shift+a")
 JPEG_QUALITY = int(os.getenv("JPEG_QUALITY", "90"))
+EVENTS_FILE = "events.json"
 
 if not SERVER_URL:
     raise RuntimeError("SERVER_URL is not configured")
@@ -86,11 +88,40 @@ def main():
         stop_agent,
     )
 
+    events = load_events()
+
+    for event in events:
+        keyboard.add_hotkey(
+            event["hotkey"],
+            lambda e=event: send_event(e)
+    )
+
     keyboard.wait()
 
 def stop_agent():
     keyboard.unhook_all_hotkeys()
     os._exit(0)
+
+def load_events():
+    with open(EVENTS_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+    
+
+def send_event(event):
+
+    headers = {
+        "Authorization": f"Bearer {UPLOAD_TOKEN}"
+    }
+
+    requests.post(
+        SERVER_URL.replace("/upload", "/event"),
+        headers=headers,
+        json={
+            "type": event["type"],
+            "message": event["message"]
+        },
+        timeout=30
+    )
 
 if __name__ == "__main__":
     main()
