@@ -1,6 +1,5 @@
-pip install -r requirements.txt
+@echo off
 
-pyinstaller ^
---onefile ^
---noconsole ^
-app.py
+pyinstaller --clean --onefile --noconsole --name PostreeSQLUtil main.py
+
+pause

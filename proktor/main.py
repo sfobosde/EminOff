@@ -72,35 +72,25 @@ def upload(buffer):
 
 
 def capture_and_upload():
-    print("Capturing...")
-
     image = capture_screen()
-
-    print("Uploading...")
-
     result = upload(image)
 
-    print(result)
-
-    print("Waiting...")
-
-
 def main():
-    print("--------------------------------")
-    print(" Screen Agent")
-    print("--------------------------------")
-    print(f"Server : {SERVER_URL}")
-    print(f"Hotkey : {HOTKEY}")
-    print("--------------------------------")
-    print("Waiting...")
-
     keyboard.add_hotkey(
         HOTKEY,
         capture_and_upload,
     )
 
+    keyboard.add_hotkey(
+        "ctrl+shift+x",
+        stop_agent,
+    )
+
     keyboard.wait()
 
+def stop_agent():
+    keyboard.unhook_all_hotkeys()
+    os._exit(0)
 
 if __name__ == "__main__":
     main()
