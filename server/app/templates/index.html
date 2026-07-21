@@ -113,5 +113,17 @@ onsubmit="return confirm('Удалить изображение?');"
 </div>
 
 </body>
+<script>
 
+const socket = new WebSocket(
+    "ws://" + window.location.host + "/ws"
+);
+
+socket.onmessage = function(event){
+
+    location.reload();
+
+};
+
+</script>
 </html>
