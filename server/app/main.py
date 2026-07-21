@@ -265,7 +265,7 @@ class EventRequest(BaseModel):
 @app.post("/event")
 async def add_event(
     event: EventRequest,
-    credentials=Depends(security)
+    credentials=Depends(verify_upload_token)
 ):
 
     verify_basic(credentials)
