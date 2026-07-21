@@ -171,10 +171,8 @@ def index(
 def image_page(
     filename: str,
     request: Request,
-    credentials=Depends(security),
+    _=Depends(security),
 ):
-    verify_basic(credentials)
-
     path = UPLOAD_DIR / filename
 
     if not path.exists():
@@ -191,10 +189,8 @@ def image_page(
 @app.get("/raw/{filename}")
 def raw_image(
     filename: str,
-    credentials=Depends(security),
+    _=Depends(security),
 ):
-    verify_basic(credentials)
-
     path = UPLOAD_DIR / filename
 
     if not path.exists():
@@ -206,10 +202,8 @@ def raw_image(
 @app.post("/delete/{filename}")
 def delete_image(
     filename: str,
-    credentials=Depends(security),
+    _=Depends(security),
 ):
-    verify_basic(credentials)
-
     path = UPLOAD_DIR / filename
 
     if not path.exists():
@@ -265,10 +259,8 @@ class EventRequest(BaseModel):
 @app.post("/event")
 async def add_event(
     event: EventRequest,
-    credentials=Depends(verify_upload_token)
+    _=Depends(verify_upload_token)
 ):
-
-    verify_basic(credentials)
 
     events = load_events()
 
