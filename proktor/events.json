@@ -1,26 +1,26 @@
 [
     {
-        "hotkey": "ctrl+shift+1",
+        "hotkey": "up",
         "type": "info",
         "message": "Говорите громче"
     },
     {
-        "hotkey": "ctrl+shift+2",
+        "hotkey": "down",
         "type": "alert",
         "message": "Говорите тише"
     },
     {
-        "hotkey": "ctrl+shift+3",
+        "hotkey": "right",
         "type": "info",
         "message": "Следующий вопрос"
     },
     {
-        "hotkey": "ctrl+shift+4",
+        "hotkey": "ctrl+left",
         "type": "alert",
         "message": "Повторите"
     },
     {
-        "hotkey": "ctrl+shift+5",
+        "hotkey": "left",
         "type": "info",
         "message": "Предыдущий вопрос"
     }

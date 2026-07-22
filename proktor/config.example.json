@@ -1,0 +1,7 @@
+{
+    "server_url": "https://your-server.com/upload",
+    "upload_token": "CHANGE_ME",
+    "hotkey": "ctrl+shift+a",
+    "exit_hotkey": "ctrl+shift+x",
+    "jpeg_quality": 90
+}

@@ -1,127 +1,57 @@
-import json
 import os
-import time
-from io import BytesIO
-
 import keyboard
-import mss
-import requests
-from dotenv import load_dotenv
-from PIL import Image
-
-load_dotenv()
-
-SERVER_URL = os.getenv("SERVER_URL")
-UPLOAD_TOKEN = os.getenv("UPLOAD_TOKEN")
-HOTKEY = os.getenv("HOTKEY", "ctrl+shift+a")
-JPEG_QUALITY = int(os.getenv("JPEG_QUALITY", "90"))
-EVENTS_FILE = "events.json"
-
-if not SERVER_URL:
-    raise RuntimeError("SERVER_URL is not configured")
-
-if not UPLOAD_TOKEN:
-    raise RuntimeError("UPLOAD_TOKEN is not configured")
 
 
-def capture_screen():
-    with mss.mss() as sct:
-        monitor = sct.monitors[1]  # первый монитор
-        shot = sct.grab(monitor)
+from screen.capture import capture_screen
 
-        image = Image.frombytes(
-            "RGB",
-            shot.size,
-            shot.rgb,
-        )
+from api.upload import upload_image
+from api.events import send_event
 
-        buffer = BytesIO()
+from handlers.events import load_events
 
-        image.save(
-            buffer,
-            format="JPEG",
-            quality=JPEG_QUALITY,
-        )
-
-        buffer.seek(0)
-
-        return buffer
-
-
-def upload(buffer):
-    headers = {
-        "Authorization": f"Bearer {UPLOAD_TOKEN}"
-    }
-
-    files = {
-        "file": (
-            f"screenshot_{int(time.time())}.jpg",
-            buffer,
-            "image/jpeg",
-        )
-    }
-
-    response = requests.post(
-        SERVER_URL,
-        headers=headers,
-        files=files,
-        timeout=30,
-    )
-
-    response.raise_for_status()
-
-    return response.json()
+from handlers.keyboard import (
+    register_keyboard,
+    wait,
+)
 
 
 def capture_and_upload():
+
     image = capture_screen()
-    result = upload(image)
+
+    upload_image(image)
+
+
+def stop_agent():
+
+    keyboard.unhook_all_hotkeys()
+
+    os._exit(0)
+
+
 
 def main():
-    keyboard.add_hotkey(
-        HOTKEY,
-        capture_and_upload,
-    )
 
-    keyboard.add_hotkey(
-        "ctrl+shift+x",
+    register_keyboard(
+        capture_and_upload,
         stop_agent,
     )
 
+
     events = load_events()
 
+
     for event in events:
+
         keyboard.add_hotkey(
             event["hotkey"],
             lambda e=event: send_event(e)
-    )
+        )
 
-    keyboard.wait()
 
-def stop_agent():
-    keyboard.unhook_all_hotkeys()
-    os._exit(0)
+    wait()
 
-def load_events():
-    with open(EVENTS_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
-    
 
-def send_event(event):
-
-    headers = {
-        "Authorization": f"Bearer {UPLOAD_TOKEN}"
-    }
-
-    requests.post(
-        SERVER_URL.replace("/upload", "/event"),
-        headers=headers,
-        json={
-            "type": event["type"],
-            "message": event["message"]
-        },
-        timeout=30
-    )
 
 if __name__ == "__main__":
     main()
