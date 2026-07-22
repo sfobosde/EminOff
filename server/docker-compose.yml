@@ -10,11 +10,16 @@ services:
 
     restart: unless-stopped
 
+
     env_file:
       - .env
+
 
     ports:
       - "${PORT}:8000"
 
+
     volumes:
       - ./uploads:/data/uploads
+      - ./events:/data
+

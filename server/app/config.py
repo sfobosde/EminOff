@@ -8,17 +8,43 @@ class Settings:
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = int(os.getenv("PORT", "8000"))
 
-    UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/data/uploads")
+    UPLOAD_DIR = os.getenv(
+        "UPLOAD_DIR",
+        "/data/uploads"
+    )
 
-    UPLOAD_TOKEN = os.getenv("UPLOAD_TOKEN", "")
+    EVENTS_FILE = os.getenv(
+        "EVENTS_FILE",
+        "/data/events.json"
+    )
 
-    WEB_USERNAME = os.getenv("WEB_USERNAME", "admin")
-    WEB_PASSWORD = os.getenv("WEB_PASSWORD", "admin")
+    UPLOAD_TOKEN = os.getenv(
+        "UPLOAD_TOKEN",
+        ""
+    )
 
-    MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "20"))
+    WEB_USERNAME = os.getenv(
+        "WEB_USERNAME",
+        "admin"
+    )
+
+    WEB_PASSWORD = os.getenv(
+        "WEB_PASSWORD",
+        "admin"
+    )
+
+    MAX_FILE_SIZE_MB = int(
+        os.getenv(
+            "MAX_FILE_SIZE_MB",
+            "20"
+        )
+    )
 
     ENABLE_DOCS = (
-        os.getenv("ENABLE_DOCS", "false").lower() == "true"
+        os.getenv(
+            "ENABLE_DOCS",
+            "false"
+        ).lower() == "true"
     )
 
 
