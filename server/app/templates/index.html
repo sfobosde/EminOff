@@ -7,62 +7,62 @@
 
     <title>Images</title>
 
-    <link
-        rel="stylesheet"
-        href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+
+    <link rel="stylesheet" href="/static/css/index.css">
 
 </head>
 
 <body>
 
-<h2>Uploaded Images</h2>
+    <h2>Uploaded Images</h2>
 
-<div class="wrapper">
+    <div class="wrapper">
 
-    <div class="grid">
+        <div class="grid">
 
-        {% for file in files %}
+            {% for file in files %}
 
-        <div class="card">
+            <div class="card">
 
-            <a href="/image/{{ file.name }}">
+                <a href="/image/{{ file.name }}">
 
-                <img src="/raw/{{ file.name }}">
+                    <img src="/raw/{{ file.name }}">
 
-                <div class="name">
-                    {{ file.name }}
-                </div>
+                    <div class="name">
+                        {{ file.name }}
+                    </div>
 
-            </a>
+                </a>
 
-            <form
-                method="post"
-                action="/delete/{{ file.name }}"
-                onsubmit="return confirm('Удалить изображение?');">
+                <form method="post" action="/delete/{{ file.name }}" onsubmit="return confirm('Удалить изображение?');">
 
-                <button class="delete">
-                    Удалить
-                </button>
+                    <button class="delete">
+                        Удалить
+                    </button>
 
-            </form>
+                </form>
+
+            </div>
+
+            {% endfor %}
 
         </div>
 
-        {% endfor %}
+        <div id="events">
+
+            <h2>Events</h2>
+
+            <div id="event-list"></div>
+
+        </div>
 
     </div>
 
-    <div id="events">
-
-        <h2>Events</h2>
-
-        <div id="event-list"></div>
-
-    </div>
-
-</div>
-
-<script src="/static/js/index.js"></script>
+    <script src="/static/js/events.js"></script>
+    <script src="/static/js/gallery.js"></script>
+    <script src="/static/js/websocket.js"></script>
+    <script src="/static/js/index.js"></script>
 
 </body>
 

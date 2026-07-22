@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -8,6 +10,8 @@ from .routers import (
     websocket,
 )
 
+BASE_DIR = Path(__file__).resolve().parent
+
 app = FastAPI(
     docs_url="/docs" if settings.ENABLE_DOCS else None,
     redoc_url=None,
@@ -15,8 +19,8 @@ app = FastAPI(
 
 app.mount(
     "/static",
-    StaticFiles(directory="app/static"),
-    name="static"
+    StaticFiles(directory=BASE_DIR / "static"),
+    name="static",
 )
 
 app.include_router(images.router)
