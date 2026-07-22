@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from .config import settings
 from .routers import (
@@ -10,6 +11,12 @@ from .routers import (
 app = FastAPI(
     docs_url="/docs" if settings.ENABLE_DOCS else None,
     redoc_url=None,
+)
+
+app.mount(
+    "/static",
+    StaticFiles(directory="app/static"),
+    name="static"
 )
 
 app.include_router(images.router)

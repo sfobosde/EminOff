@@ -219,3 +219,6 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 proktor/config.json
+
+server/events/events.json
+server/events/events.json

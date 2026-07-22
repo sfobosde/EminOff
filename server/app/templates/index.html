@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
 
@@ -7,212 +7,63 @@
 
     <title>Images</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            margin: 40px;
-            background: #f5f5f5;
-        }
-
-        .grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            width: 220px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
-        }
-
-        img {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        a {
-            text-decoration: none;
-            color: #333;
-        }
-
-        .name {
-            margin-top: 10px;
-            word-break: break-all;
-            font-size: 14px;
-        }
-
-        .delete {
-
-            margin-top: 10px;
-
-            background: #d9534f;
-
-            color: white;
-
-            border: none;
-
-            padding: 6px 12px;
-
-            border-radius: 5px;
-
-            cursor: pointer;
-
-        }
-
-        .delete:hover {
-
-            opacity: 0.8;
-
-        }
-
-        #events {
-
-            width: 320px;
-
-            padding: 20px;
-
-            overflow: auto;
-
-            background: #fafafa;
-
-            border-left: 1px solid #ddd;
-
-        }
-        .event {
-
-            padding: 12px;
-
-            margin-bottom: 12px;
-
-            border-radius: 8px;
-
-        }
-        .wrapper {
-
-            display: flex;
-            gap: 20px;
-        }
-    </style>
+    <link
+        rel="stylesheet"
+        href="/static/css/index.css">
 
 </head>
 
 <body>
 
-    <h2>Uploaded Images</h2>
-    <div class="wrapper"> 
-        <div class="grid">
+<h2>Uploaded Images</h2>
 
-            {% for file in files %}
+<div class="wrapper">
 
-            <div class="card">
+    <div class="grid">
 
-                <a href="/image/{{ file.name }}">
+        {% for file in files %}
 
-                    <img src="/raw/{{ file.name }}">
+        <div class="card">
 
-                    <div class="name">
+            <a href="/image/{{ file.name }}">
 
-                        {{ file.name }}
+                <img src="/raw/{{ file.name }}">
 
-                    </div>
+                <div class="name">
+                    {{ file.name }}
+                </div>
 
+            </a>
 
-                    <form method="post" action="/delete/{{ file.name }}" onsubmit="return confirm('Удалить изображение?');">
+            <form
+                method="post"
+                action="/delete/{{ file.name }}"
+                onsubmit="return confirm('Удалить изображение?');">
 
-                        <button class="delete">
-                            Удалить
-                        </button>
+                <button class="delete">
+                    Удалить
+                </button>
 
-                    </form>
-
-                </a>
-
-            </div>
-
-            {% endfor %}
+            </form>
 
         </div>
 
-        <div id="events">
+        {% endfor %}
 
-            <h2>Events</h2>
-
-            <div id="event-list">
-
-            </div>
-
-        </div>
     </div>
+
+    <div id="events">
+
+        <h2>Events</h2>
+
+        <div id="event-list"></div>
+
+    </div>
+
+</div>
+
+<script src="/static/js/index.js"></script>
+
 </body>
-<script>
-
-    const socket = new WebSocket(
-        "ws://" + window.location.host + "/ws"
-    );
-
-    socket.onmessage = function (event) {
-
-        const msg = JSON.parse(event.data);
-
-        if (msg.kind === "image") {
-
-            location.reload();
-
-        }
-
-        if (msg.kind === "event") {
-
-            addEvent(msg.event);
-
-        }
-
-    };
-
-    function addEvent(event) {
-
-        const div = document.createElement("div");
-
-        div.className = "event";
-
-        div.style.borderLeft =
-            "6px solid " + event.color;
-
-        div.style.background =
-            event.background;
-
-        div.innerHTML =
-
-            "<div><b>" +
-
-            event.icon +
-
-            " " +
-
-            event.title +
-
-            "</b></div>" +
-
-            "<div>" +
-
-            event.message +
-
-            "</div>" +
-
-            "<small>" +
-
-            event.time +
-
-            "</small>";
-
-        document
-            .getElementById("event-list")
-            .prepend(div);
-
-    }
-</script>
 
 </html>
